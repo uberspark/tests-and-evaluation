@@ -1,2 +1,2 @@
 # tests-and-evaluation
-Tests and evaluations associated to our LENS project work
+Tests and evaluations associated to the framework
