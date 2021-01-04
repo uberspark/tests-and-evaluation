@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import time
 
 from sys import argv, exit
 
@@ -6,11 +7,12 @@ from sys import argv, exit
 def print_usage():
 	"""Print the usage string if script was used improperly"""
 	print('Usage: \
-		\t$ {} <pid> <string to read> <string to write>'.format(argv[0]))
+		\t$ {} <pid> <offset from heap start> <byte0> <byte1> <byte2> <byte3> <byte4>'.format(argv[0]))
+	print("e.g. : \t$ python3 mem_attack.py 21566 8 0 0 0 0 0")
 	exit(1)
 
 
-def read_write_heap(pid, read_str, write_str):
+def read_write_heap(pid, offset, byte0, byte1, byte2, byte3, byte4):
 	"""Find @read_str in the heap of @pid and replace it with @write_str"""
 	try:
 		maps_file = open("/proc/{}/maps".format(pid), 'r')
@@ -39,18 +41,23 @@ def read_write_heap(pid, read_str, write_str):
 	heap_end = int(addr[1], 16)
 	mem_file.seek(heap_start)
 	heap = mem_file.read(heap_end - heap_start)
-	str_offset = heap.find(bytes(read_str, "ASCII"))
-	if str_offset < 0:
-		print("Can't find {} in /proc/{}/mem".format(read_str, pid))
-		exit(1)
-	mem_file.seek(heap_start + str_offset)
-	mem_file.write(bytes(write_str + '\0', "ASCII"))
+	int_offset = int(offset,16)
+	while True:
+		mem_file.seek(heap_start + int_offset)
+		mem_file.write(bytes([byte0,byte1,byte2,byte3,byte4]))
+		mem_file.flush()
+		time.sleep(0.005)
+	mem_file.close()
 
 
-if (len(argv) == 4):
+if (len(argv) == 8):
 	pid = argv[1]
-	search_str = argv[2]
-	replace_str = argv[3]
-	read_write_heap(pid, search_str, replace_str)
+	offset = argv[2]
+	b0 = int(argv[3])
+	b1 = int(argv[4])
+	b2 = int(argv[5])
+	b3 = int(argv[6])
+	b4 = int(argv[7])
+	read_write_heap(pid, offset, b0, b1, b2, b3, b4)
 else:
 	print_usage()
