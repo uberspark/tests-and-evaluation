@@ -7,8 +7,8 @@ from sys import argv, exit
 def print_usage():
 	"""Print the usage string if script was used improperly"""
 	print('Usage: \
-		\t$ {} <pid> <offset from heap start> <byte0> <byte1> <byte2> <byte3> <byte4>'.format(argv[0]))
-	print("e.g. : \t$ python3 mem_attack.py 21566 8 0 0 0 0 0")
+		\t$ {} <pid> <heap_addr from heap start> <byte0> <byte1> <byte2> <byte3> <byte4>'.format(argv[0]))
+	print("e.g. : \t$ python3 mem_attack.py 21566 0x64ed88 0 0 0 0 0")
 	exit(1)
 
 
@@ -42,9 +42,14 @@ def read_write_heap(pid, offset, byte0, byte1, byte2, byte3, byte4):
 	mem_file.seek(heap_start)
 	heap = mem_file.read(heap_end - heap_start)
 	int_offset = int(offset,16)
+	print(hex(int_offset))
 	while True:
-		mem_file.seek(heap_start + int_offset)
-		mem_file.write(bytes([byte0,byte1,byte2,byte3,byte4]))
+		mem_file.seek(int_offset)
+		mem_file.write(b0.to_bytes(4,byteorder='little'))
+		mem_file.write(b1.to_bytes(4,byteorder='little'))
+		mem_file.write(b2.to_bytes(4,byteorder='little'))
+		mem_file.write(b3.to_bytes(4,byteorder='little'))
+		mem_file.write(b4.to_bytes(4,byteorder='little'))
 		mem_file.flush()
 		time.sleep(0.005)
 	mem_file.close()
