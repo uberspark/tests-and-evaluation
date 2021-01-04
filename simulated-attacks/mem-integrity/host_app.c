@@ -16,7 +16,7 @@ int main(int ac, char **av)
 		strcpy(str, av[1]);
 	}
 	else{
-	   printf("Incorrect number of arguments");
+	   printf("Incorrect number of arguments\n");
 	   return -1;
 	}
 	while (i)
