@@ -12,12 +12,17 @@ The code contains host_app.c which was not modified and mem_attack.py file,
   * Build the host application to be attacked:  
     make  
   * Run the host application:  
-    ./host_app "Good, safe variable"  
+    python3 line_follower_clib.py
   * Find the PID of the host application  
-    ps -aux | grep host_app  
+    ps -aux | grep python3  
   * Run the Python script that modifies the memory  
     Use the found PID in the following command:  
-    sudo ./mem_attack.py PID "Good, safe variable" "Boom, Hacked!"  
-  * Observe that the host application displays the new string in its memory location  
-    [84] Good, safe variable - addr: 0x5555555592a0  
-    [85] Boom, Hacked! - addr: 0x5555555592a0  
+    python3 mem_attack.py 21566 0x64ed88 0 0 0 0 0
+    21566 is the PID of the process we want to attack
+    0x64ed88 is the address in the heap of the buffer we want to overwrite.
+    This information is printed from the C library called by the line_follower_clib.py script
+    0 0 0 0 0 are the values for the 5 sensors we want to overwrite
+  * Observe that the host application displays the new sensor readings and the car is not able to follow the line while we keep the attack going. 
+    Once the attack stops the car is able to continue to follow the line. 
+    
+   
