@@ -12,8 +12,12 @@ int main(int ac, char **av)
 
 	if (ac == 2)
 	{
-		str = malloc(len(av[1]) + 1);
+		str = (char *) malloc(len(av[1]) + 1);
 		strcpy(str, av[1]);
+	}
+	else{
+	   printf("Incorrect number of arguments\n");
+	   return -1;
 	}
 	while (i)
 	{
